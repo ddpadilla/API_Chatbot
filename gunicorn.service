@@ -1,0 +1,16 @@
+[Unit]
+Description=Gunicorn daemon for Django Project
+Before=nginx.service
+After=network.target
+
+[Service]
+WorkingDirectory=/home/django/API_Chatbot
+ExecStart=/usr/bin/gunicorn3 --name=chatbot --pythonpath=/home/django/API_Chatbot --bind unix:/home/django/gunicorn.socket --config /etc/gunicorn.d/gunicorn.py chatbot.wsgi:application
+Restart=always
+SyslogIdentifier=gunicorn
+User=django
+Group=django
+
+
+[Install]
+WantedBy=multi-user.target
