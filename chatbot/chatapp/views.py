@@ -81,12 +81,10 @@ class ConsultasView(APIView):
 
 class HistorialPilaView(APIView):
     def get(self, request):
-        # Devuelve el historial actual
         historial = request.session.get('historial', [])
         return Response({"historial": historial}, status=status.HTTP_200_OK)
 
     def post(self, request):
-        # Agrega una nueva consulta al historial
         nueva_entrada = request.data.get('consulta')
         if not nueva_entrada:
             return Response({"error": "Se requiere una consulta para agregar al historial."},
@@ -95,19 +93,16 @@ class HistorialPilaView(APIView):
         if 'historial' not in request.session:
             request.session['historial'] = []
 
-        # Agrega la nueva consulta al final (tope de la pila)
         request.session['historial'].append(nueva_entrada)
         request.session.modified = True
 
         return Response({"message": "Consulta agregada al historial."}, status=status.HTTP_201_CREATED)
 
     def delete(self, request):
-        # Elimina el último elemento del historial (tope de la pila)
         historial = request.session.get('historial', [])
         if not historial:
             return Response({"error": "El historial está vacío."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Elimina el último elemento
         ultima_entrada = historial.pop()
         request.session['historial'] = historial
         request.session.modified = True
